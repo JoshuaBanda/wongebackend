@@ -1,0 +1,30 @@
+name: Deploy Application
+
+on:
+  push:
+    branches:
+      - main  # Adjust based on your main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.12.2'  # Specify your Node.js version
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Migrations
+        env:
+          DATABASE_URL: ${{postgresql://postgres.pzfnkksuadewjmiycvlu:bsc%23inf%2304%2322@aws-0-eu-west-1.pooler.supabase.com:6543/postgres}}  # Use your database URL from secrets
+        run: npm run migrate
+
+      - name: Start Application
+        run: npm run start:prod  # Start your app in production mode
